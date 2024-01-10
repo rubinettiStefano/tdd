@@ -22,7 +22,7 @@ public class AntivirusRepositorySQLTest
         String dbInformations = "jdbc:mysql://localhost:3306/itshop?user=jaita&password=jaita107";
         Connection con =  DriverManager.getConnection(dbInformations);
         Statement s = con.createStatement();
-        String queryDatabase =  "DROP TABLE IF NOT EXIST antivirus ;";
+        String queryDatabase =  "DROP TABLE IF  EXISTS antivirus ;";
         s.execute(queryDatabase);
         String queryDatabase2 = "CREATE TABLE antivirus (id INT PRIMARY KEY,name VARCHAR(255),price INT,percentageSlow INT)";;
         s.execute(queryDatabase2);   

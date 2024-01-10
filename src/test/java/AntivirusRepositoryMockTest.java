@@ -28,7 +28,7 @@ public class AntivirusRepositoryMockTest
         originale.add(new Antivirus(10, "Malwarebytes Premium", 39, 9));
        
         AntivirusRepositoryFactory.make("mock").readAll().clear();
-        AntivirusRepositoryFactory.make("mock").addAll(originale);
+        AntivirusRepositoryFactory.make("mock").readAll().addAll(originale);
     }
 
 
