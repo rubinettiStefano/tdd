@@ -28,38 +28,55 @@ public class NotebookRepositoryMock implements NotebookRepository
 
     @Override
     public List<Notebook> readAll() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'readAll'");
+        
+        // List<Notebook> res = new ArrayList<Notebook>();
+
+        // res.addAll(content);
+
+        // return res;
+
+        return content;
+        
     }
 
     @Override
     public Notebook readById(int id) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'readById'");
+        
+        Notebook res = null;
+
+        for(Notebook n : content)
+            if(n.getId() == id)
+                res = n;
+
+        return res;
+
     }
 
     @Override
     public void insert(Notebook n) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'insert'");
+        
+        content.add(n);
     }
 
     @Override
     public void update(Notebook n) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'update'");
+        
+        Notebook tmp = readById(n.getId());
+        tmp.setModel(n.getModel());
+        tmp.setPrice(n.getPrice());
+ 
     }
 
     @Override
     public void delete(Notebook n) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'delete'");
+        
+        delete(n.getId());
     }
 
     @Override
     public void delete(int id) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'delete'");
+        
+        content.remove(readById(id));
     }
 
 }

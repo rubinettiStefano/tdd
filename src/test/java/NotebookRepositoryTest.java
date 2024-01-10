@@ -1,29 +1,62 @@
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.Statement;
+
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import com.generation.entities.Notebook;
+import com.generation.factories.NotebookRepositoryFactory;
 import com.generation.interfaces.NotebookRepository;
-import com.generation.repositories.NotebookRepositoryMock;
 
 public class NotebookRepositoryTest 
 {
-    @Test
-    void testReadAll()
+   
+    @BeforeEach
+    private void setup() throws ClassNotFoundException, SQLException
     {
-        NotebookRepository repo = new NotebookRepositoryMock();
+        String versione = "com.mysql.cj.jdbc.Driver";
+        Class.forName(versione);   
+        String dbInformations = "jdbc:mysql://localhost:3306/itshop?user=jaita&password=jaita107";
+        Connection con =  DriverManager.getConnection(dbInformations);
+        Statement s = con.createStatement();
+        String queryDatabase =  "DROP TABLE notebook;";
+        s.execute(queryDatabase);
+        String queryDatabase2 = "CREATE TABLE  notebook (id INT PRIMARY KEY,model VARCHAR(255) NOT NULL,price INT NOT NULL);";
+        s.execute(queryDatabase2);   
+        String queryDatabase3 =  
+            "INSERT INTO notebook (id, model, price) VALUES (1, 'Ideapad', 300),"
+            +" (2, 'Vaio', 800),"+
+            " (3, 'Macbook', 1600),"+
+            " (4, 'EEpc', 100),"+
+            " (5, 'Razer', 1500),"+
+            " (6, 'Samsung Galaxy Notebook', 600),"+
+            " (7, 'Alienware', 2800);";
+        s.execute(queryDatabase3);
+        
+        s.close();
+    }
+
+
+    @Test
+    void testReadAll() 
+    {
+        NotebookRepository repo = NotebookRepositoryFactory.make("sql");
 
         for(Notebook n : repo.readAll())
             assertTrue(n.getId()>0);
     }
 
     @Test
-    void testReadOne()
+    void testReadOne() 
     {
-        NotebookRepository repo = new NotebookRepositoryMock();
+        NotebookRepository repo = NotebookRepositoryFactory.make("sql");
 
-        Notebook n = repo.readById(1);
+        Notebook n = repo.readById(4);
         assertTrue(n!=null);
 
         Notebook nonDeveEsistere = repo.readById(19043);
@@ -31,14 +64,14 @@ public class NotebookRepositoryTest
     }
 
     @Test
-    void testInsert()
+    void testInsert() 
     {
-        NotebookRepository repo = new NotebookRepositoryMock();
+        NotebookRepository repo = NotebookRepositoryFactory.make("sql");
 
         int initial = repo.readAll().size();
 
-        repo.insert(new Notebook(8,"Ciofecone",50));
-
+        repo.insert(new Notebook(9,"Ciofecone",50));
+        
         int endingSize = repo.readAll().size();
 
         assertEquals(initial+1, endingSize);
@@ -47,7 +80,7 @@ public class NotebookRepositoryTest
     @Test
     void testUpdate()
     {
-        NotebookRepository repo = new NotebookRepositoryMock();
+        NotebookRepository repo = NotebookRepositoryFactory.make("sql");
 
         Notebook newVersion = new Notebook(1, "NoIdeaPad", 220);
 
@@ -64,13 +97,13 @@ public class NotebookRepositoryTest
     }
 
     @Test
-    void testDelete1()
+    void testDelete1() 
     {
-        NotebookRepository repo = new NotebookRepositoryMock();
+        NotebookRepository repo = NotebookRepositoryFactory.make("sql");
 
         int initial = repo.readAll().size();
 
-        repo.delete(new Notebook(1,"Ideapad",300));
+        repo.delete(new Notebook(3,"Ideapad",300));
 
         int endingSize = repo.readAll().size();
 
@@ -78,13 +111,13 @@ public class NotebookRepositoryTest
     }
 
     @Test
-    void testDelete2()
+    void testDelete2() 
     {
-        NotebookRepository repo = new NotebookRepositoryMock();
+        NotebookRepository repo = NotebookRepositoryFactory.make("sql");
 
         int initial = repo.readAll().size();
 
-        repo.delete(1);
+        repo.delete(2);
 
         int endingSize = repo.readAll().size();
 

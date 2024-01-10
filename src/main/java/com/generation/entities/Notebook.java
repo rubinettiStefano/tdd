@@ -37,5 +37,12 @@ public class Notebook
         this.price = price;
     }
 
+
+
+    @Override
+    public String toString() {
+        return "Notebook [id=" + id + ", model=" + model + ", price=" + price + "]";
+    }
+
     
 }
